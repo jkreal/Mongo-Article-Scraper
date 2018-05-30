@@ -1,0 +1,29 @@
+{
+  "name": "Mongo-Article-Scraper",
+  "version": "1.0.0",
+  "description": "Using MongoDB + Cheerio to create an article scraper site",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jkrowden/Mongo-Article-Scraper.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jkrowden/Mongo-Article-Scraper/issues"
+  },
+  "homepage": "https://github.com/jkrowden/Mongo-Article-Scraper#readme",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "cheerio": "^1.0.0-rc.2",
+    "express": "^4.16.3",
+    "express-handlebars": "^3.0.0",
+    "mongoose": "^5.1.2",
+    "request": "^2.87.0"
+  }
+}
