@@ -1,3 +1,21 @@
-{{>header}}
+{{>header}} {{#each articles}}
 
-{{>footer}}
+<div class="row article" id="article-{{@index}}">
+    <div class="col-md">
+        <img src={{source}} alt="">
+    </div>
+    <div class="col-md">
+        {{!-- Article title --}}
+        <h2 class="title">{{title}}</h2>
+    </div>
+    <div class="col-md">
+        {{!-- Content --}}
+        <p class="content">{{content}}</p>
+    </div>
+    <div class="col-md">
+        {{!-- Save article button --}}
+        <button class="save-article" id="save-{{@index}}">Save</button>
+    </div>
+</div>
+
+{{/each}} {{>footer}}

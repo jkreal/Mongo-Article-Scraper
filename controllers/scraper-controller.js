@@ -1,10 +1,12 @@
 const mongoose = require("mongoose");
 const request = require("request");
 const cheerio = require("cheerio");
+const Article = require("../config/articleModel.js");
 
+var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/scrapert";
 var url = "http://ubergizmo.com";
-var databaseUrl = process.env.MONGODB_URI || "mongodb://localhost/scraper";
-var collections = ["scrapedData"];
+
+mongoose.connect(MONGODB_URI);
 
 module.exports = function (app) {
 
@@ -20,6 +22,10 @@ module.exports = function (app) {
 
 	app.get("/scrape", function (req, res) {
 		//scrape articles to db
+		Article.deleteMany({}, function () {
+			console.log('database wiped');
+		});
+
 		request(url, function (error, response, html) {
 			if (error) throw error;
 
@@ -48,8 +54,23 @@ module.exports = function (app) {
 			});
 
 			// 	insert into db
+			for (var i = 0; i < titles.length; i++) {
+				Article.create({
+					title: titles[i],
+					content: contents[i],
+					image: images[i],
+					link: links[i]
+				}).then(function (dbArticle) {
+					console.log(dbArticle.title + " || added to db");
+				}).catch(function (err) {
+					throw err;
+				});
+			}
 		});
-		res.send("success message");
+
+		console.log(Article.find({title: 'Huawei Y9 Review'}));
+
+		res.render("index", {});
 	});
 
 	app.get("/saved", function (req, res) {
