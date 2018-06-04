@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const request = require("request");
 const cheerio = require("cheerio");
-const Article = require("../config/articleModel.js");
+const db = require("../models");
 
 var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/scrapert";
 var url = "http://ubergizmo.com";
@@ -22,7 +22,7 @@ module.exports = function (app) {
 
 	app.get("/scrape", function (req, res) {
 		//scrape articles to db
-		Article.deleteMany({}, function () {
+		db.Article.deleteMany({}, function () {
 			console.log('database wiped');
 		});
 
@@ -55,7 +55,7 @@ module.exports = function (app) {
 
 			// 	insert into db
 			for (var i = 0; i < titles.length; i++) {
-				Article.create({
+				db.Article.create({
 					title: titles[i],
 					content: contents[i],
 					image: images[i],
@@ -68,7 +68,7 @@ module.exports = function (app) {
 			}
 		});
 
-		console.log(Article.find({title: 'Huawei Y9 Review'}));
+
 
 		res.render("index", {});
 	});
@@ -78,6 +78,11 @@ module.exports = function (app) {
 		//possibly from local storage?
 		//or whatever we learned the day I was gone
 
+		db.Article.find({})
+		.then(function(dbArticle) {
+			console.log(dbArticle);
+		});
+		
 		res.render("saved", {});
 	});
 

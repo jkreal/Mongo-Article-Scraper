@@ -1,3 +1,11 @@
 $(document).ready(function () {
-    console.log("I am wokring");
+
 });
+
+$('#btn-scrape').on("click", function() {
+    $.ajax({url: "/scrape", success: function(result) {
+        console.log("scrape success");
+    }});
+});
+
+

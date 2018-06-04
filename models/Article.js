@@ -1,11 +1,12 @@
 const mongoose = require("mongoose");
 
 var Schema = mongoose.Schema;
+
 var articleSchema = new Schema({
     title: {
         type: String,
         trim: true,
-        required: "Article name is required"
+        required: true
     },
     content: {
         type: String,
