@@ -19,7 +19,7 @@ var articleSchema = new Schema({
     link: {
         type: String,
         trim: true,
-        match: [/^(http?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/]
+        match: [/^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/]
     }
 });
 

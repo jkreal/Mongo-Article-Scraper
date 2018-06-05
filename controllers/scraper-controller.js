@@ -4,7 +4,7 @@ const cheerio = require("cheerio");
 const db = require("../models");
 
 var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/scrapert";
-var url = "http://ubergizmo.com";
+var url = "https://techcrunch.com/";
 
 mongoose.connect(MONGODB_URI);
 
@@ -12,12 +12,18 @@ module.exports = function (app) {
 
 	app.get("/", function (req, res) {
 		//view index page
-		res.render("index", {});
+		db.Article.find({}).then(function (articles) {
+			console.log(articles);
+			res.render("index", {articles});
+		});
+
 	});
 
+	//JSON articles
 	app.get("/articles", function (req, res) {
-		//view the articles in the db
-		res.render("articles", {});
+		db.Article.find({}).then(function (data) {
+			res.json(data);
+		});
 	});
 
 	app.get("/scrape", function (req, res) {
@@ -35,30 +41,32 @@ module.exports = function (app) {
 			var contents = [];
 			var links = [];
 
-			$('div.byline_container_home > h1').each(function (i, element) {
-				var title = $(element).text();
+			$('h2.post-block__title').each(function (i, element) {
+				var title = $(element).text().trim();
 				titles.push(title);
-
-				var link = $(element).children().attr('href');
-				links.push(link);
 			});
 
-			$('div.article > p').each(function (i, element) {
-				var image = $(element).children().attr('src') || $(element).children().attr('href');
-				images.push(image);
-			});
-
-			$('div.article > p').each(function (i, element) {
-				var content = $(element).text();
+			$('div.post-block__content').each(function (i, element) {
+				var content = $(element).text().trim() + '...';
 				contents.push(content);
 			});
 
-			// 	insert into db
+			$('a.post-block__title__link').each(function (i, element) {
+				var link = $(element).attr('href');
+				links.push(link);
+			});
+
+			$('figure.post-block__media').each(function (i, element) {
+				var image = $(element).find('img').attr('src');
+				images.push(image);
+
+			});
+				// insert into db
 			for (var i = 0; i < titles.length; i++) {
 				db.Article.create({
 					title: titles[i],
 					content: contents[i],
-					image: images[i],
+					image: images[i] || "",
 					link: links[i]
 				}).then(function (dbArticle) {
 					console.log(dbArticle.title + " || added to db");
@@ -66,11 +74,9 @@ module.exports = function (app) {
 					throw err;
 				});
 			}
+
 		});
 
-
-
-		res.render("index", {});
 	});
 
 	app.get("/saved", function (req, res) {
@@ -79,10 +85,10 @@ module.exports = function (app) {
 		//or whatever we learned the day I was gone
 
 		db.Article.find({})
-		.then(function(dbArticle) {
-			console.log(dbArticle);
-		});
-		
+			.then(function (dbArticle) {
+				console.log(dbArticle);
+			});
+
 		res.render("saved", {});
 	});
 
